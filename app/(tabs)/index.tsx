@@ -2,7 +2,7 @@
 import { StyleSheet, View, Text, ScrollView, TouchableOpacity, Modal, TextInput, Alert } from 'react-native';
 import { Image } from 'expo-image';
 import { useState } from 'react';
-import { database } from '../firebaseConfig';
+import { database } from '@/firebaseConfig';
 import { ref, push } from 'firebase/database';
 
 const services = [
@@ -41,7 +41,7 @@ const services = [
   {
     icon: '🌬️',
     title: 'Osmosis Suyu',
-    description: 'Təmizlənmiş su ilə ləkəsiz durulama',
+    description: 'Təmizlənmədən su ilə ləkəsiz durulama',
     pricePerSec: '₼0.025/sec',
     pricePerMin: '₼1.50/min',
     color: '#22b8cf',
