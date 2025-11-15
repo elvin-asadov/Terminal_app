@@ -1,5 +1,5 @@
 
-import { StyleSheet, View, Text, ScrollView, TouchableOpacity, Modal } from 'react-native';
+import { StyleSheet, View, Text, ScrollView, TouchableOpacity, Modal, TextInput } from 'react-native';
 import { Image } from 'expo-image';
 import { useState } from 'react';
 
@@ -64,10 +64,100 @@ const services = [
 
 export default function HomeScreen() {
   const [modalVisible, setModalVisible] = useState(false);
+  const [cashModalVisible, setCashModalVisible] = useState(false);
+  const [contactlessModalVisible, setContactlessModalVisible] = useState(false);
+  const [customAmount, setCustomAmount] = useState(5);
+
+  const openCashModal = () => {
+    setModalVisible(false);
+    setCashModalVisible(true);
+  }
+
+  const openContactlessModal = () => {
+    setModalVisible(false);
+    setContactlessModalVisible(true);
+  }
+
+  const handleAmountChange = (increment) => {
+      setCustomAmount(prev => {
+          const newValue = prev + increment;
+          return newValue > 0 ? newValue : 1;
+      });
+  }
 
   return (
     <View style={styles.container}>
-       <Modal
+        <Modal
+        animationType="slide"
+        transparent={true}
+        visible={contactlessModalVisible}
+        onRequestClose={() => setContactlessModalVisible(false)}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+              <View style={styles.amountIconContainer}>
+                  <Text>💳</Text>
+              </View>
+            <Text style={styles.modalTitle}>Select Amount</Text>
+            <Text style={styles.modalSubtitle}>Choose how much to add to your balance</Text>
+            <View style={styles.amountButtonsContainer}>
+                <TouchableOpacity style={styles.amountButton}><Text style={styles.amountButtonText}>5 ₼</Text></TouchableOpacity>
+                <TouchableOpacity style={styles.amountButton}><Text style={styles.amountButtonText}>10 ₼</Text></TouchableOpacity>
+            </View>
+            <View style={styles.amountButtonsContainer}>
+                <TouchableOpacity style={styles.amountButton}><Text style={styles.amountButtonText}>20 ₼</Text></TouchableOpacity>
+                <TouchableOpacity style={styles.amountButton}><Text style={styles.amountButtonText}>50 ₼</Text></TouchableOpacity>
+            </View>
+            <View style={styles.customAmountContainer}>
+                <Text style={styles.customAmountLabel}>Custom Amount</Text>
+                <View style={styles.customAmountInputContainer}>
+                    <TouchableOpacity style={styles.customAmountButton} onPress={() => handleAmountChange(-1)}><Text style={styles.customAmountButtonText}>-</Text></TouchableOpacity>
+                    <TextInput style={styles.customAmountInput} value={`${customAmount} ₼`} editable={false}/>
+                    <TouchableOpacity style={styles.customAmountButton} onPress={() => handleAmountChange(1)}><Text style={styles.customAmountButtonText}>+</Text></TouchableOpacity>
+                </View>
+                <TouchableOpacity style={styles.useAmountButton}><Text style={styles.useAmountButtonText}>{`Use ${customAmount} ₼`}</Text></TouchableOpacity>
+            </View>
+            <TouchableOpacity onPress={() => setContactlessModalVisible(false)}><Text style={styles.cancelAmountText}>Cancel</Text></TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={cashModalVisible}
+        onRequestClose={() => setCashModalVisible(false)}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <View style={styles.cashIconContainer}>
+              <Text>💰</Text>
+            </View>
+            <Text style={styles.cashModalTitle}>Nağd pulu terminala daxil edin</Text>
+            <View style={styles.cashInsertedContainer}>
+              <Text style={styles.cashInsertedLabel}>CASH INSERTED</Text>
+              <Text style={styles.cashInsertedAmount}>10.36 ₼</Text>
+              <View style={styles.progressBar}><View style={styles.progress} /></View>
+            </View>
+            <View style={styles.continueContainer}>
+              <Text style={styles.arrowIcon}>→</Text>
+              <Text style={styles.continueText}>Continue inserting cash</Text>
+            </View>
+            <Text style={styles.instructions}>
+              Insert bills and coins into the terminal on the left side
+            </Text>
+            <View style={styles.cashButtonsContainer}>
+              <TouchableOpacity style={styles.completePaymentButton} onPress={() => setCashModalVisible(false)}>
+                <Text style={styles.completePaymentButtonText}>Complete Payment (10.36 ₼)</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.cancelButton} onPress={() => setCashModalVisible(false)}>
+                <Text style={styles.cancelButtonText}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      <Modal
         animationType="slide"
         transparent={true}
         visible={modalVisible}
@@ -85,8 +175,8 @@ export default function HomeScreen() {
             </TouchableOpacity>
             <Text style={styles.modalTitle}>Ödəniş Variantları</Text>
             <Text style={styles.modalSubtitle}>Ödəniş Metodunu Seçin</Text>
-            
-            <TouchableOpacity style={[styles.option, {backgroundColor: '#69db7c'}]}>
+
+            <TouchableOpacity style={[styles.option, { backgroundColor: '#69db7c' }]} onPress={openCashModal}>
               <View style={styles.optionIconContainer}>
                 <Text>💰</Text>
               </View>
@@ -100,7 +190,7 @@ export default function HomeScreen() {
               <Text style={styles.arrow}>〉</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={[styles.option, {backgroundColor: '#64a0ff'}]}>
+            <TouchableOpacity style={[styles.option, { backgroundColor: '#64a0ff' }]} onPress={openContactlessModal}>
               <View style={styles.optionIconContainer}>
                 <Text>💳</Text>
               </View>
@@ -113,28 +203,28 @@ export default function HomeScreen() {
                   <TouchableOpacity style={styles.paymentButton}><Text>Təmassız Kart</Text></TouchableOpacity>
                 </View>
               </View>
-               <Text style={styles.arrow}>〉</Text>
+              <Text style={styles.arrow}>〉</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={[styles.option, {backgroundColor: '#ae85ff'}]}>
+            <TouchableOpacity style={[styles.option, { backgroundColor: '#ae85ff' }]}>
               <View style={styles.optionIconContainer}>
                 <Text>📱</Text>
               </View>
               <View style={styles.optionTextContainer}>
                 <Text style={styles.optionTitle}>QR Kod Ödənişi</Text>
                 <Text style={styles.optionSubtitle}>Mobil ödəniş tətbiqi ilə QR kodu skan edin</Text>
-                 <View style={styles.paymentButtons}>
+                <View style={styles.paymentButtons}>
                   <TouchableOpacity style={styles.paymentButton}><Text>PayPal</Text></TouchableOpacity>
                   <TouchableOpacity style={styles.paymentButton}><Text>Venmo</Text></TouchableOpacity>
                   <TouchableOpacity style={styles.paymentButton}><Text>CashApp</Text></TouchableOpacity>
                 </View>
               </View>
-               <Text style={styles.arrow}>〉</Text>
+              <Text style={styles.arrow}>〉</Text>
             </TouchableOpacity>
-
           </View>
         </View>
       </Modal>
+
       <View style={styles.header}>
         <Image source={require('@/assets/images/logo.png')} style={styles.logo} />
         <View style={styles.headerTextContainer}>
@@ -142,14 +232,14 @@ export default function HomeScreen() {
           <Text style={styles.headerSubtitle}>Premium Özünüxidmət Avtoyuma</Text>
         </View>
         <View style={styles.headerInfo}>
-            <View>
-                <Text style={styles.balance}>BALANS</Text>
-                <Text style={styles.balanceAmount}>0.00 ₼</Text>
-            </View>
-            <View>
-                <Text style={styles.activeService}>AKTİV XİDMƏT</Text>
-                <Text style={styles.activeServiceText}>Yuma</Text>
-            </View>
+          <View>
+            <Text style={styles.balance}>BALANS</Text>
+            <Text style={styles.balanceAmount}>0.00 ₼</Text>
+          </View>
+          <View>
+            <Text style={styles.activeService}>AKTİV XİDMƏT</Text>
+            <Text style={styles.activeServiceText}>Yuma</Text>
+          </View>
         </View>
         <View style={styles.languageContainer}>
           <Image source={{ uri: 'https://i.imgur.com/O2yT4pE.png' }} style={styles.flag} />
@@ -218,8 +308,8 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   headerInfo: {
-      flexDirection: 'row',
-      marginLeft: 'auto'
+    flexDirection: 'row',
+    marginLeft: 'auto'
   },
   balance: {
     color: 'white',
@@ -349,7 +439,8 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
     shadowRadius: 4,
-    elevation: 5
+    elevation: 5,
+    width: '80%'
   },
   closeButton: {
     position: 'absolute',
@@ -368,6 +459,7 @@ const styles = StyleSheet.create({
   modalSubtitle: {
     fontSize: 16,
     marginBottom: 20,
+    textAlign: 'center'
   },
   option: {
     flexDirection: 'row',
@@ -414,4 +506,177 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginRight: 10,
   },
+  cashModalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginVertical: 15,
+    textAlign: 'center'
+  },
+  cashIconContainer: {
+      backgroundColor: '#e9fbf0',
+      padding: 15,
+      borderRadius: 50,
+  },
+  cashInsertedContainer: {
+      backgroundColor: '#f0fff4',
+      borderRadius: 15,
+      padding: 20,
+      width: '100%',
+      alignItems: 'center',
+      marginVertical: 10,
+  },
+  cashInsertedLabel: {
+      color: '#2f9e44',
+      fontSize: 12,
+  },
+  cashInsertedAmount: {
+      color: '#2f9e44',
+      fontSize: 28,
+      fontWeight: 'bold',
+  },
+  progressBar: {
+      width: '100%',
+      height: 5,
+      backgroundColor: '#d3f9d8',
+      borderRadius: 5,
+      marginTop: 10,
+  },
+  progress: {
+      width: '40%',
+      height: '100%',
+      backgroundColor: '#51cf66',
+      borderRadius: 5,
+  },
+  continueContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginVertical: 10,
+  },
+  arrowIcon: {
+      fontSize: 24,
+      color: '#495057',
+  },
+  continueText: {
+      marginLeft: 10,
+      color: '#495057',
+  },
+  instructions: {
+      color: '#868e96',
+      textAlign: 'center',
+      marginVertical: 10,
+  },
+  cashButtonsContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      width: '100%',
+      marginTop: 20,
+  },
+  completePaymentButton: {
+      backgroundColor: '#12b886',
+      paddingVertical: 15,
+      paddingHorizontal: 20,
+      borderRadius: 30,
+      flex: 1,
+      marginRight: 10,
+      alignItems: 'center'
+  },
+  completePaymentButtonText: {
+      color: 'white',
+      fontWeight: 'bold',
+  },
+  cancelButton: {
+      backgroundColor: '#fff0f6',
+      paddingVertical: 15,
+      paddingHorizontal: 30,
+      borderRadius: 30,
+  },
+  cancelButtonText: {
+      color: '#f06595',
+      fontWeight: 'bold',
+  },
+  amountIconContainer: {
+    backgroundColor: '#e3fafc',
+    padding: 15,
+    borderRadius: 50,
+    marginBottom: 15,
+  },
+  amountButtonsContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+      width: '100%',
+      marginBottom: 10,
+  },
+  amountButton: {
+      backgroundColor: '#12b886',
+      paddingVertical: 15,
+      paddingHorizontal: 30,
+      borderRadius: 15,
+      marginHorizontal: 5,
+      flex: 1,
+      alignItems: 'center'
+  },
+  amountButtonText: {
+      color: 'white',
+      fontWeight: 'bold',
+      fontSize: 16,
+  },
+  customAmountContainer: {
+      backgroundColor: '#f8f9fa',
+      borderRadius: 15,
+      padding: 20,
+      width: '100%',
+      alignItems: 'center',
+      marginVertical: 10,
+  },
+  customAmountLabel: {
+      fontSize: 14,
+      color: '#495057',
+  },
+  customAmountInputContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginVertical: 10,
+  },
+  customAmountButton: {
+      backgroundColor: '#e9ecef',
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      justifyContent: 'center',
+      alignItems: 'center',
+  },
+  customAmountButtonText: {
+      fontSize: 24,
+      color: '#495057',
+  },
+  customAmountInput: {
+      borderWidth: 1,
+      borderColor: '#dee2e6',
+      borderRadius: 10,
+      padding: 10,
+      marginHorizontal: 10,
+      textAlign: 'center',
+      fontSize: 18,
+      fontWeight: 'bold',
+      width: 100,
+  },
+  useAmountButton: {
+      backgroundColor: '#228be6',
+      borderRadius: 25,
+      paddingVertical: 15,
+      paddingHorizontal: 40,
+      width: '100%',
+      alignItems: 'center',
+      marginTop: 10
+  },
+  useAmountButtonText: {
+      color: 'white',
+      fontWeight: 'bold',
+      fontSize: 16,
+  },
+  cancelAmountText: {
+      color: '#f06595',
+      fontWeight: 'bold',
+      marginTop: 15,
+  }
 });
