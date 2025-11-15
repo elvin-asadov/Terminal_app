@@ -1,7 +1,9 @@
 
-import { StyleSheet, View, Text, ScrollView, TouchableOpacity, Modal, TextInput } from 'react-native';
+import { StyleSheet, View, Text, ScrollView, TouchableOpacity, Modal, TextInput, Alert } from 'react-native';
 import { Image } from 'expo-image';
 import { useState } from 'react';
+import { database } from '../firebaseConfig';
+import { ref, push } from 'firebase/database';
 
 const services = [
   {
@@ -68,6 +70,21 @@ export default function HomeScreen() {
   const [contactlessModalVisible, setContactlessModalVisible] = useState(false);
   const [customAmount, setCustomAmount] = useState(5);
 
+  const recordPayment = async (paymentType: string, amount: number) => {
+    try {
+      const paymentsRef = ref(database, 'payments');
+      await push(paymentsRef, {
+        paymentType,
+        amount,
+        timestamp: new Date().toISOString(),
+      });
+      Alert.alert("Success", `Payment of ${amount} ₼ recorded via ${paymentType}.`);
+    } catch (error) {
+      Alert.alert("Error", "Failed to record payment.");
+      console.error("Error recording payment: ", error);
+    }
+  };
+
   const openCashModal = () => {
     setModalVisible(false);
     setCashModalVisible(true);
@@ -78,7 +95,7 @@ export default function HomeScreen() {
     setContactlessModalVisible(true);
   }
 
-  const handleAmountChange = (increment) => {
+  const handleAmountChange = (increment: number) => {
       setCustomAmount(prev => {
           const newValue = prev + increment;
           return newValue > 0 ? newValue : 1;
@@ -101,12 +118,12 @@ export default function HomeScreen() {
             <Text style={styles.modalTitle}>Select Amount</Text>
             <Text style={styles.modalSubtitle}>Choose how much to add to your balance</Text>
             <View style={styles.amountButtonsContainer}>
-                <TouchableOpacity style={styles.amountButton}><Text style={styles.amountButtonText}>5 ₼</Text></TouchableOpacity>
-                <TouchableOpacity style={styles.amountButton}><Text style={styles.amountButtonText}>10 ₼</Text></TouchableOpacity>
+                <TouchableOpacity style={styles.amountButton} onPress={() => {recordPayment("Contactless", 5); setContactlessModalVisible(false);}}><Text style={styles.amountButtonText}>5 ₼</Text></TouchableOpacity>
+                <TouchableOpacity style={styles.amountButton} onPress={() => {recordPayment("Contactless", 10); setContactlessModalVisible(false);}}><Text style={styles.amountButtonText}>10 ₼</Text></TouchableOpacity>
             </View>
             <View style={styles.amountButtonsContainer}>
-                <TouchableOpacity style={styles.amountButton}><Text style={styles.amountButtonText}>20 ₼</Text></TouchableOpacity>
-                <TouchableOpacity style={styles.amountButton}><Text style={styles.amountButtonText}>50 ₼</Text></TouchableOpacity>
+                <TouchableOpacity style={styles.amountButton} onPress={() => {recordPayment("Contactless", 20); setContactlessModalVisible(false);}}><Text style={styles.amountButtonText}>20 ₼</Text></TouchableOpacity>
+                <TouchableOpacity style={styles.amountButton} onPress={() => {recordPayment("Contactless", 50); setContactlessModalVisible(false);}}><Text style={styles.amountButtonText}>50 ₼</Text></TouchableOpacity>
             </View>
             <View style={styles.customAmountContainer}>
                 <Text style={styles.customAmountLabel}>Custom Amount</Text>
@@ -115,7 +132,7 @@ export default function HomeScreen() {
                     <TextInput style={styles.customAmountInput} value={`${customAmount} ₼`} editable={false}/>
                     <TouchableOpacity style={styles.customAmountButton} onPress={() => handleAmountChange(1)}><Text style={styles.customAmountButtonText}>+</Text></TouchableOpacity>
                 </View>
-                <TouchableOpacity style={styles.useAmountButton}><Text style={styles.useAmountButtonText}>{`Use ${customAmount} ₼`}</Text></TouchableOpacity>
+                <TouchableOpacity style={styles.useAmountButton} onPress={() => {recordPayment("Contactless - Custom", customAmount); setContactlessModalVisible(false);}}><Text style={styles.useAmountButtonText}>{`Use ${customAmount} ₼`}</Text></TouchableOpacity>
             </View>
             <TouchableOpacity onPress={() => setContactlessModalVisible(false)}><Text style={styles.cancelAmountText}>Cancel</Text></TouchableOpacity>
           </View>
@@ -146,7 +163,7 @@ export default function HomeScreen() {
               Insert bills and coins into the terminal on the left side
             </Text>
             <View style={styles.cashButtonsContainer}>
-              <TouchableOpacity style={styles.completePaymentButton} onPress={() => setCashModalVisible(false)}>
+              <TouchableOpacity style={styles.completePaymentButton} onPress={() => {recordPayment("Cash", 10.36); setCashModalVisible(false);}}>
                 <Text style={styles.completePaymentButtonText}>Complete Payment (10.36 ₼)</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.cancelButton} onPress={() => setCashModalVisible(false)}>
