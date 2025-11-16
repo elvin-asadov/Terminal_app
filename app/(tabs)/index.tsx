@@ -64,6 +64,14 @@ const services = [
     pricePerMin: '₼1.02/min',
     color: '#ff8787',
   },
+  {
+    icon: '💿',
+    title: 'Təkər və Disk Təmizləyicisi',
+    description: 'Təkərlər və disklər üçün xüsusi təmizlik',
+    pricePerSec: '₼0.029/sec',
+    pricePerMin: '₼1.74/min',
+    color: '#ae85ff',
+  },
 ];
 
 export default function HomeScreen() {
@@ -160,7 +168,7 @@ export default function HomeScreen() {
             <View style={styles.continueContainer}>
               <Text style={styles.arrowIcon}>→</Text>
               <Text style={styles.continueText}>Continue inserting cash</Text>
-            </Text>
+            </View>
             <View style={styles.cashButtonsContainer}>
               <TouchableOpacity style={styles.completePaymentButton} onPress={() => {recordPayment("Cash", 10.36); setCashModalVisible(false);}}>
                 <Text style={styles.completePaymentButtonText}>Complete Payment (10.36 ₼)</Text>
@@ -240,32 +248,34 @@ export default function HomeScreen() {
           </View>
         </View>
       </Modal>
-      {/* Main Logo Container */}
-      <View style={styles.topLogoContainer}>
-        <Image source={require('@/assets/images/logo.png')} style={styles.centralLogo} />
+
+      <View style={styles.topBackground}>
+        <View style={styles.topLogoContainer}>
+          <Image source={require('@/assets/images/logo.png')} style={styles.centralLogo} />
+        </View>
+        <View style={styles.headerCard}>
+          <View style={styles.headerTextContainer}>
+            <Text style={styles.headerTitle}>ALTAY Avto MMC</Text>
+            <Text style={styles.headerSubtitle}>Premium Özünüxidmət Avtoyuma</Text>
+          </View>
+          <View style={styles.headerRightContent}>
+            <View style={styles.balanceContainer}>
+              <Text style={styles.balanceLabel}>BALANS</Text>
+              <Text style={styles.balanceAmount}>0.00 ₼</Text>
+            </View>
+            <View style={styles.activeServiceContainer}>
+              <Text style={styles.activeServiceLabel}>AKTİV XİDMƏT</Text>
+              <Text style={styles.activeServiceText}>Yuma</Text>
+            </View>
+            <View style={styles.languageContainer}>
+              <Image source={require('@/assets/images/azerbajani_logo.png')} style={styles.flag} />
+              <Image source={require('@/assets/images/russian_logo.png')} style={styles.flag} />
+              <Image source={require('@/assets/images/engilsh_logo.png')} style={styles.flag} />
+            </View>
+          </View>
+        </View>
       </View>
 
-      <View style={styles.header}>
-        <View style={styles.headerTextContainer}>
-          <Text style={styles.headerTitle}>ALTAY Avto MMC</Text>
-          <Text style={styles.headerSubtitle}>Premium Özünüxidmət Avtoyuma</Text>
-        </View>
-        <View style={styles.headerInfo}>
-          <View>
-            <Text style={styles.balance}>BALANS</Text>
-            <Text style={styles.balanceAmount}>0.00 ₼</Text>
-          </View>
-          <View>
-            <Text style={styles.activeService}>AKTİV XİDMƏT</Text>
-            <Text style={styles.activeServiceText}>Yuma</Text>
-          </View>
-        </View>
-        <View style={styles.languageContainer}>
-          <Image source={{ uri: 'https://i.imgur.com/O2yT4pE.png' }} style={styles.flag} />
-          <Image source={{ uri: 'https://i.imgur.com/fCi829k.png' }} style={styles.flag} />
-          <Image source={{ uri: 'https://i.imgur.com/wVp7Ecf.png' }} style={styles.flag} />
-        </View>
-      </View>
       <View style={styles.mainContent}>
         <ScrollView style={styles.servicesList}>
           {services.map((service, index) => (
@@ -285,7 +295,11 @@ export default function HomeScreen() {
         </ScrollView>
         <View style={styles.sidebar}>
           <View style={styles.balanceCard}>
+            <View style={styles.sidebarBalanceIconContainer}>
+              <Text style={styles.sidebarBalanceIcon}>💳</Text>
+            </View>
             <Text style={styles.balanceCardTitle}>Balans</Text>
+            <Text style={styles.balanceCount}>(0)</Text>
             <Text style={styles.balanceCardAmount}>0.00 ₼</Text>
             <TouchableOpacity style={styles.addBalanceButton} onPress={() => setModalVisible(true)}>
               <Text style={styles.addBalanceButtonText}>+ Balans əlavə et</Text>
@@ -302,67 +316,101 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#0c0e2b',
   },
+  topBackground: {
+    backgroundColor: '#1a1d4a',
+    paddingTop: 90,
+    paddingBottom: 70, 
+    alignItems: 'center',
+  },
   topLogoContainer: {
     width: '100%',
     alignItems: 'center',
-    paddingTop: 20,
-    backgroundColor: '#1a1d4a',
+    position: 'absolute',
+    top: 10,
+    zIndex: 1,
   },
   centralLogo: {
-    width: 650, 
-    height: 75, 
+    width: 550, 
+    height: 100, 
     resizeMode: 'contain',
   },
-  header: {
+  headerCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 20,
-    paddingTop: 10, 
-    backgroundColor: '#1a1d4a',
+    justifyContent: 'space-between',
+    backgroundColor: 'white',
+    borderRadius: 15,
+    marginHorizontal: 10,
+    padding: 15,
+    position: 'absolute',
+    bottom: -40, 
+    width: '95%',
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   headerTextContainer: {
-    marginLeft: 10,
+    marginLeft: 5,
   },
   headerTitle: {
-    color: 'white',
+    color: '#333',
     fontSize: 18,
     fontWeight: 'bold',
   },
   headerSubtitle: {
-    color: 'white',
+    color: '#666',
     fontSize: 12,
   },
-  headerInfo: {
+  headerRightContent: {
     flexDirection: 'row',
-    marginLeft: 'auto'
+    alignItems: 'center',
   },
-  balance: {
-    color: 'white',
-    fontSize: 12,
+  balanceContainer: {
+    backgroundColor: '#e9fbf0',
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    marginRight: 10,
+    alignItems: 'center',
+  },
+  balanceLabel: {
+    color: '#2f9e44',
+    fontSize: 10,
   },
   balanceAmount: {
-    color: '#4dff7c',
-    fontSize: 16,
+    color: '#2f9e44',
+    fontSize: 14,
     fontWeight: 'bold',
   },
-  activeService: {
-    color: 'white',
-    fontSize: 12,
-    marginLeft: 15
+  activeServiceContainer: {
+    backgroundColor: '#e0f2f7',
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    marginRight: 10,
+    alignItems: 'center',
+  },
+  activeServiceLabel: {
+    color: '#228be6',
+    fontSize: 10,
   },
   activeServiceText: {
-    color: 'white',
+    color: '#228be6',
     fontSize: 14,
-    marginLeft: 15
   },
   languageContainer: {
     flexDirection: 'row',
-    marginLeft: 20,
+    marginLeft: 10,
   },
   flag: {
-    width: 30,
-    height: 20,
+    width: 25,
+    height: 18,
     marginLeft: 5,
+    borderRadius: 3,
+    borderWidth: 0.5,
+    borderColor: '#eee',
   },
   mainContent: {
     flexDirection: 'row',
@@ -371,6 +419,7 @@ const styles = StyleSheet.create({
   servicesList: {
     flex: 2,
     padding: 10,
+    marginTop: 50, 
   },
   serviceItem: {
     flexDirection: 'row',
@@ -416,6 +465,7 @@ const styles = StyleSheet.create({
   sidebar: {
     flex: 1,
     padding: 10,
+    marginTop: 50, 
   },
   balanceCard: {
     backgroundColor: 'white',
@@ -423,15 +473,30 @@ const styles = StyleSheet.create({
     padding: 20,
     alignItems: 'center',
   },
+  sidebarBalanceIconContainer: {
+    backgroundColor: '#e3fafc',
+    padding: 10,
+    borderRadius: 50,
+    marginBottom: 10,
+  },
+  sidebarBalanceIcon: {
+    fontSize: 24,
+    color: '#228be6',
+  },
   balanceCardTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#333'
   },
+  balanceCount: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 5,
+  },
   balanceCardAmount: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#2f9e44',
     marginVertical: 10,
   },
   addBalanceButton: {
@@ -458,10 +523,7 @@ const styles = StyleSheet.create({
     padding: 35,
     alignItems: "center",
     shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2
-    },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
@@ -538,86 +600,86 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   },
   cashIconContainer: {
-      backgroundColor: '#e9fbf0',
-      padding: 15,
-      borderRadius: 50,
+    backgroundColor: '#e9fbf0',
+    padding: 15,
+    borderRadius: 50,
   },
   cashInsertedContainer: {
-      backgroundColor: '#f0fff4',
-      borderRadius: 15,
-      padding: 20,
-      width: '100%',
-      alignItems: 'center',
-      marginVertical: 10,
+    backgroundColor: '#f0fff4',
+    borderRadius: 15,
+    padding: 20,
+    width: '100%',
+    alignItems: 'center',
+    marginVertical: 10,
   },
   cashInsertedLabel: {
-      color: '#2f9e44',
-      fontSize: 12,
+    color: '#2f9e44',
+    fontSize: 12,
   },
   cashInsertedAmount: {
-      color: '#2f9e44',
-      fontSize: 28,
-      fontWeight: 'bold',
+    color: '#2f9e44',
+    fontSize: 28,
+    fontWeight: 'bold',
   },
   progressBar: {
-      width: '100%',
-      height: 5,
-      backgroundColor: '#d3f9d8',
-      borderRadius: 5,
-      marginTop: 10,
+    width: '100%',
+    height: 5,
+    backgroundColor: '#d3f9d8',
+    borderRadius: 5,
+    marginTop: 10,
   },
   progress: {
-      width: '40%',
-      height: '100%',
-      backgroundColor: '#51cf66',
-      borderRadius: 5,
+    width: '40%',
+    height: '100%',
+    backgroundColor: '#51cf66',
+    borderRadius: 5,
   },
   continueContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      marginVertical: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 10,
   },
   arrowIcon: {
-      fontSize: 24,
-      color: '#495057',
+    fontSize: 24,
+    color: '#495057',
   },
   continueText: {
-      marginLeft: 10,
-      color: '#495057',
+    marginLeft: 10,
+    color: '#495057',
   },
   instructions: {
-      color: '#868e96',
-      textAlign: 'center',
-      marginVertical: 10,
+    color: '#868e96',
+    textAlign: 'center',
+    marginVertical: 10,
   },
   cashButtonsContainer: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      width: '100%',
-      marginTop: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    marginTop: 20,
   },
   completePaymentButton: {
-      backgroundColor: '#12b886',
-      paddingVertical: 15,
-      paddingHorizontal: 20,
-      borderRadius: 30,
-      flex: 1,
-      marginRight: 10,
-      alignItems: 'center'
+    backgroundColor: '#12b886',
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    borderRadius: 30,
+    flex: 1,
+    marginRight: 10,
+    alignItems: 'center'
   },
   completePaymentButtonText: {
-      color: 'white',
-      fontWeight: 'bold',
+    color: 'white',
+    fontWeight: 'bold',
   },
   cancelButton: {
-      backgroundColor: '#fff0f6',
-      paddingVertical: 15,
-      paddingHorizontal: 30,
-      borderRadius: 30,
+    backgroundColor: '#fff0f6',
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    borderRadius: 30,
   },
   cancelButtonText: {
-      color: '#f06595',
-      fontWeight: 'bold',
+    color: '#f06595',
+    fontWeight: 'bold',
   },
   amountIconContainer: {
     backgroundColor: '#e3fafc',
@@ -626,82 +688,82 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   amountButtonsContainer: {
-      flexDirection: 'row',
-      justifyContent: 'space-around',
-      width: '100%',
-      marginBottom: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
+    marginBottom: 10,
   },
   amountButton: {
-      backgroundColor: '#12b886',
-      paddingVertical: 15,
-      paddingHorizontal: 30,
-      borderRadius: 15,
-      marginHorizontal: 5,
-      flex: 1,
-      alignItems: 'center'
+    backgroundColor: '#12b886',
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    borderRadius: 15,
+    marginHorizontal: 5,
+    flex: 1,
+    alignItems: 'center'
   },
   amountButtonText: {
-      color: 'white',
-      fontWeight: 'bold',
-      fontSize: 16,
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 16,
   },
   customAmountContainer: {
-      backgroundColor: '#f8f9fa',
-      borderRadius: 15,
-      padding: 20,
-      width: '100%',
-      alignItems: 'center',
-      marginVertical: 10,
+    backgroundColor: '#f8f9fa',
+    borderRadius: 15,
+    padding: 20,
+    width: '100%',
+    alignItems: 'center',
+    marginVertical: 10,
   },
   customAmountLabel: {
-      fontSize: 14,
-      color: '#495057',
+    fontSize: 14,
+    color: '#495057',
   },
   customAmountInputContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      marginVertical: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 10,
   },
   customAmountButton: {
-      backgroundColor: '#e9ecef',
-      width: 40,
-      height: 40,
-      borderRadius: 20,
-      justifyContent: 'center',
-      alignItems: 'center',
+    backgroundColor: '#e9ecef',
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   customAmountButtonText: {
-      fontSize: 24,
-      color: '#495057',
+    fontSize: 24,
+    color: '#495057',
   },
   customAmountInput: {
-      borderWidth: 1,
-      borderColor: '#dee2e6',
-      borderRadius: 10,
-      padding: 10,
-      marginHorizontal: 10,
-      textAlign: 'center',
-      fontSize: 18,
-      fontWeight: 'bold',
-      width: 100,
+    borderWidth: 1,
+    borderColor: '#dee2e6',
+    borderRadius: 10,
+    padding: 10,
+    marginHorizontal: 10,
+    textAlign: 'center',
+    fontSize: 18,
+    fontWeight: 'bold',
+    width: 100,
   },
   useAmountButton: {
-      backgroundColor: '#228be6',
-      borderRadius: 25,
-      paddingVertical: 15,
-      paddingHorizontal: 40,
-      width: '100%',
-      alignItems: 'center',
-      marginTop: 10
+    backgroundColor: '#228be6',
+    borderRadius: 25,
+    paddingVertical: 15,
+    paddingHorizontal: 40,
+    width: '100%',
+    alignItems: 'center',
+    marginTop: 10
   },
   useAmountButtonText: {
-      color: 'white',
-      fontWeight: 'bold',
-      fontSize: 16,
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 16,
   },
   cancelAmountText: {
-      color: '#f06595',
-      fontWeight: 'bold',
-      marginTop: 15,
-  }
+    color: '#f06595',
+    fontWeight: 'bold',
+    marginTop: 15,
+  },
 });
