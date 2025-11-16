@@ -1,4 +1,3 @@
-
 import { StyleSheet, View, Text, ScrollView, TouchableOpacity, Modal, TextInput, Alert, Dimensions } from 'react-native';
 import { Image } from 'expo-image';
 import { useState } from 'react';
@@ -78,7 +77,9 @@ export default function HomeScreen() {
   const [modalVisible, setModalVisible] = useState(false);
   const [cashModalVisible, setCashModalVisible] = useState(false);
   const [contactlessModalVisible, setContactlessModalVisible] = useState(false);
+  const [nfcModalVisible, setNfcModalVisible] = useState(false); // New state for NFC modal
   const [customAmount, setCustomAmount] = useState(5);
+  const [selectedAmount, setSelectedAmount] = useState(0); // To store the selected amount for NFC
 
   const recordPayment = async (paymentType: string, amount: number) => {
     try {
@@ -112,8 +113,61 @@ export default function HomeScreen() {
       });
   }
 
+  // New function to handle amount selection and open NFC modal
+  const handleAmountSelection = (amount: number) => {
+    setSelectedAmount(amount);
+    setContactlessModalVisible(false);
+    setNfcModalVisible(true);
+  }
+
   return (
     <View style={styles.container}>
+        {/* NFC Modal */}
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={nfcModalVisible}
+          onRequestClose={() => setNfcModalVisible(false)}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <View style={styles.nfcIconContainer}>
+                <Text style={styles.nfcIcon}>📶</Text>
+              </View>
+              <Text style={styles.nfcModalTitle}>Cihazınızı NFC oxuyucuya yaxınlaşdırın</Text>
+              <View style={styles.nfcAmountDisplay}>
+                <Text style={styles.nfcAmountText}>Amount: {selectedAmount}.00 ₼</Text>
+              </View>
+              <Text style={styles.nfcArrow}>↓</Text>
+              <View style={styles.nfcReaderContainer}>
+                <Text style={styles.nfcReaderIcon}>📶</Text>
+                <Text style={styles.nfcReaderText}>NFC Reader</Text>
+              </View>
+              <Text style={styles.nfcInstructions}>
+                Hold your device above the NFC reader below
+              </Text>
+              <View style={styles.cashButtonsContainer}>
+                <TouchableOpacity
+                  style={styles.completePaymentButton}
+                  onPress={() => {
+                    recordPayment("NFC Contactless", selectedAmount);
+                    setNfcModalVisible(false);
+                  }}
+                >
+                  <Text style={styles.completePaymentButtonText}>Complete Payment ({selectedAmount}.00 ₼)</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.cancelButton}
+                  onPress={() => setNfcModalVisible(false)}
+                >
+                  <Text style={styles.cancelButtonText}>Cancel</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+
+        {/* Contactless Payment Modal (Select Amount) */}
         <Modal
         animationType="slide"
         transparent={true}
@@ -128,12 +182,12 @@ export default function HomeScreen() {
             <Text style={styles.modalTitle}>Select Amount</Text>
             <Text style={styles.modalSubtitle}>Choose how much to add to your balance</Text>
             <View style={styles.amountButtonsContainer}>
-                <TouchableOpacity style={styles.amountButton} onPress={() => {recordPayment("Contactless", 5); setContactlessModalVisible(false);}}><Text style={styles.amountButtonText}>5 ₼</Text></TouchableOpacity>
-                <TouchableOpacity style={styles.amountButton} onPress={() => {recordPayment("Contactless", 10); setContactlessModalVisible(false);}}><Text style={styles.amountButtonText}>10 ₼</Text></TouchableOpacity>
+                <TouchableOpacity style={styles.amountButton} onPress={() => handleAmountSelection(5)}><Text style={styles.amountButtonText}>5 ₼</Text></TouchableOpacity>
+                <TouchableOpacity style={styles.amountButton} onPress={() => handleAmountSelection(10)}><Text style={styles.amountButtonText}>10 ₼</Text></TouchableOpacity>
             </View>
             <View style={styles.amountButtonsContainer}>
-                <TouchableOpacity style={styles.amountButton} onPress={() => {recordPayment("Contactless", 20); setContactlessModalVisible(false);}}><Text style={styles.amountButtonText}>20 ₼</Text></TouchableOpacity>
-                <TouchableOpacity style={styles.amountButton} onPress={() => {recordPayment("Contactless", 50); setContactlessModalVisible(false);}}><Text style={styles.amountButtonText}>50 ₼</Text></TouchableOpacity>
+                <TouchableOpacity style={styles.amountButton} onPress={() => handleAmountSelection(20)}><Text style={styles.amountButtonText}>20 ₼</Text></TouchableOpacity>
+                <TouchableOpacity style={styles.amountButton} onPress={() => handleAmountSelection(50)}><Text style={styles.amountButtonText}>50 ₼</Text></TouchableOpacity>
             </View>
             <View style={styles.customAmountContainer}>
                 <Text style={styles.customAmountLabel}>Custom Amount</Text>
@@ -142,12 +196,14 @@ export default function HomeScreen() {
                     <TextInput style={styles.customAmountInput} value={`${customAmount} ₼`} editable={false}/>
                     <TouchableOpacity style={styles.customAmountButton} onPress={() => handleAmountChange(1)}><Text style={styles.customAmountButtonText}>+</Text></TouchableOpacity>
                 </View>
-                <TouchableOpacity style={styles.useAmountButton} onPress={() => {recordPayment("Contactless - Custom", customAmount); setContactlessModalVisible(false);}}><Text style={styles.useAmountButtonText}>{`Use ${customAmount} ₼`}</Text></TouchableOpacity>
+                <TouchableOpacity style={styles.useAmountButton} onPress={() => handleAmountSelection(customAmount)}><Text style={styles.useAmountButtonText}>{`Use ${customAmount} ₼`}</Text></TouchableOpacity>
             </View>
             <TouchableOpacity onPress={() => setContactlessModalVisible(false)}><Text style={styles.cancelAmountText}>Cancel</Text></TouchableOpacity>
           </View>
         </View>
       </Modal>
+
+      {/* Cash Payment Modal */}
       <Modal
         animationType="slide"
         transparent={true}
@@ -169,6 +225,9 @@ export default function HomeScreen() {
               <Text style={styles.arrowIcon}>→</Text>
               <Text style={styles.continueText}>Continue inserting cash</Text>
             </View>
+            <Text style={styles.instructions}>
+              Insert bills and coins into the terminal on the left side
+            </Text>
             <View style={styles.cashButtonsContainer}>
               <TouchableOpacity style={styles.completePaymentButton} onPress={() => {recordPayment("Cash", 10.36); setCashModalVisible(false);}}>
                 <Text style={styles.completePaymentButtonText}>Complete Payment (10.36 ₼)</Text>
@@ -181,6 +240,7 @@ export default function HomeScreen() {
         </View>
       </Modal>
 
+      {/* Main Payment Options Modal */}
       <Modal
         animationType="slide"
         transparent={true}
@@ -318,7 +378,7 @@ const styles = StyleSheet.create({
   },
   topBackground: {
     backgroundColor: '#1a1d4a',
-    paddingTop: 90,
+    paddingTop: 120, // Adjusted to lift the logo further
     paddingBottom: 70, 
     alignItems: 'center',
   },
@@ -326,12 +386,12 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     position: 'absolute',
-    top: 10,
+    top: 30, // Adjusted to lift the logo higher
     zIndex: 1,
   },
   centralLogo: {
-    width: 550, 
-    height: 100, 
+    width: 690, // Increased size
+    height: 138, // Increased size
     resizeMode: 'contain',
   },
   headerCard: {
@@ -405,11 +465,11 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   flag: {
-    width: 25,
-    height: 18,
-    marginLeft: 5,
-    borderRadius: 3,
-    borderWidth: 0.5,
+    width: 40, // Increased size
+    height: 29, // Increased size
+    marginLeft: 8,
+    borderRadius: 5,
+    borderWidth: 0.8,
     borderColor: '#eee',
   },
   mainContent: {
@@ -748,22 +808,4 @@ const styles = StyleSheet.create({
     width: 100,
   },
   useAmountButton: {
-    backgroundColor: '#228be6',
-    borderRadius: 25,
-    paddingVertical: 15,
-    paddingHorizontal: 40,
-    width: '100%',
-    alignItems: 'center',
-    marginTop: 10
-  },
-  useAmountButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-  cancelAmountText: {
-    color: '#f06595',
-    fontWeight: 'bold',
-    marginTop: 15,
-  },
-});
+    backgroundColor: '#228
