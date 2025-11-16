@@ -1,9 +1,11 @@
 
-import { StyleSheet, View, Text, ScrollView, TouchableOpacity, Modal, TextInput, Alert } from 'react-native';
+import { StyleSheet, View, Text, ScrollView, TouchableOpacity, Modal, TextInput, Alert, Dimensions } from 'react-native';
 import { Image } from 'expo-image';
 import { useState } from 'react';
 import { database } from '@/firebaseConfig';
 import { ref, push } from 'firebase/database';
+
+const { width } = Dimensions.get('window');
 
 const services = [
   {
@@ -158,9 +160,6 @@ export default function HomeScreen() {
             <View style={styles.continueContainer}>
               <Text style={styles.arrowIcon}>→</Text>
               <Text style={styles.continueText}>Continue inserting cash</Text>
-            </View>
-            <Text style={styles.instructions}>
-              Insert bills and coins into the terminal on the left side
             </Text>
             <View style={styles.cashButtonsContainer}>
               <TouchableOpacity style={styles.completePaymentButton} onPress={() => {recordPayment("Cash", 10.36); setCashModalVisible(false);}}>
@@ -241,9 +240,12 @@ export default function HomeScreen() {
           </View>
         </View>
       </Modal>
+      {/* Main Logo Container */}
+      <View style={styles.topLogoContainer}>
+        <Image source={require('@/assets/images/logo.png')} style={styles.centralLogo} />
+      </View>
 
       <View style={styles.header}>
-        <Image source={require('@/assets/images/logo.png')} style={styles.logo} />
         <View style={styles.headerTextContainer}>
           <Text style={styles.headerTitle}>ALTAY Avto MMC</Text>
           <Text style={styles.headerSubtitle}>Premium Özünüxidmət Avtoyuma</Text>
@@ -300,17 +302,23 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#0c0e2b',
   },
+  topLogoContainer: {
+    width: '100%',
+    alignItems: 'center',
+    paddingTop: 20,
+    backgroundColor: '#1a1d4a',
+  },
+  centralLogo: {
+    width: 650, 
+    height: 75, 
+    resizeMode: 'contain',
+  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: 20,
-    paddingTop: 50,
+    paddingTop: 10, 
     backgroundColor: '#1a1d4a',
-  },
-  logo: {
-    width: 100,
-    height: 50,
-    resizeMode: 'contain',
   },
   headerTextContainer: {
     marginLeft: 10,
@@ -368,42 +376,42 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderRadius: 15,
-    padding: 15,
-    marginBottom: 10,
+    padding: 25,
+    marginBottom: 15,
   },
   serviceIcon: {
-    fontSize: 30,
+    fontSize: 35,
   },
   serviceText: {
     flex: 1,
-    marginLeft: 15,
+    marginLeft: 20,
   },
   serviceTitle: {
     color: 'white',
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: 'bold',
   },
   serviceDescription: {
     color: 'white',
-    fontSize: 12,
-    marginTop: 2
+    fontSize: 14,
+    marginTop: 3
   },
   priceContainer: {
     flexDirection: 'row',
-    marginTop: 5,
+    marginTop: 8,
   },
   price: {
     color: 'white',
-    fontSize: 12,
-    marginRight: 10,
+    fontSize: 14,
+    marginRight: 12,
     backgroundColor: 'rgba(0,0,0,0.2)',
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 10
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12
   },
   arrow: {
     color: 'white',
-    fontSize: 20,
+    fontSize: 24,
   },
   sidebar: {
     flex: 1,
