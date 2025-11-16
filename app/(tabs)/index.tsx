@@ -196,7 +196,7 @@ export default function HomeScreen() {
                     <TextInput style={styles.customAmountInput} value={`${customAmount} ₼`} editable={false}/>
                     <TouchableOpacity style={styles.customAmountButton} onPress={() => handleAmountChange(1)}><Text style={styles.customAmountButtonText}>+</Text></TouchableOpacity>
                 </View>
-                <TouchableOpacity style={styles.useAmountButton} onPress={() => handleAmountSelection(customAmount)}><Text style={styles.useAmountButtonText}>{`Use ${customAmount} ₼`}</Text></TouchableOpacity>
+                <TouchableOpacity style={styles.useAmountButton} onPress={() => handleAmountSelection(customAmount)}><Text style={styles.amountButtonText}>{`Use ${customAmount} ₼`}</Text></TouchableOpacity>
             </View>
             <TouchableOpacity onPress={() => setContactlessModalVisible(false)}><Text style={styles.cancelAmountText}>Cancel</Text></TouchableOpacity>
           </View>
@@ -712,6 +712,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginVertical: 10,
   },
+  nfcInstructions: {
+    color: '#868e96',
+    textAlign: 'center',
+    marginVertical: 10,
+  },
   cashButtonsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -808,6 +813,59 @@ const styles = StyleSheet.create({
     width: 100,
   },
   useAmountButton: {
-    backgroundColor: '#228'
-  }
+    backgroundColor: '#228be6',
+    borderRadius: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    marginTop: 10,
+  },
+  cancelAmountText: {
+    color: '#868e96',
+    marginTop: 15,
+  },
+  nfcIconContainer: {
+    backgroundColor: '#e3fafc',
+    padding: 15,
+    borderRadius: 50,
+    marginBottom: 15,
+  },
+  nfcIcon: {
+    fontSize: 32,
+    color: '#228be6',
+  },
+  nfcModalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginVertical: 15,
+  },
+  nfcAmountDisplay: {
+    backgroundColor: '#f8f9fa',
+    borderRadius: 10,
+    padding: 10,
+    marginVertical: 10,
+  },
+  nfcAmountText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#495057',
+  },
+  nfcArrow: {
+    fontSize: 24,
+    color: '#495057',
+    marginVertical: 5,
+  },
+  nfcReaderContainer: {
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  nfcReaderIcon: {
+    fontSize: 48,
+    color: '#495057',
+  },
+  nfcReaderText: {
+    fontSize: 16,
+    color: '#868e96',
+    marginTop: 5,
+  },
 })
