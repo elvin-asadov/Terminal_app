@@ -3,7 +3,7 @@ import { getDatabase } from 'firebase/database';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyAuubUW0j5fkI1XXm5Eog-ng02VfwpF3b4",
+  apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
   authDomain: "studio-6315135015-f579f.firebaseapp.com",
   databaseURL: "https://studio-6315135015-f579f-default-rtdb.firebaseio.com",
   projectId: "studio-6315135015-f579f",

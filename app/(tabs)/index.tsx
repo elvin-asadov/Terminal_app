@@ -1,8 +1,8 @@
-import { StyleSheet, View, Text, ScrollView, TouchableOpacity, Modal, TextInput, Alert, Dimensions } from 'react-native';
-import { Image } from 'expo-image';
-import { useState } from 'react';
 import { database } from '@/firebaseConfig';
-import { ref, push } from 'firebase/database';
+import { Image } from 'expo-image';
+import { push, ref } from 'firebase/database';
+import { useState } from 'react';
+import { Alert, Dimensions, Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 const { width } = Dimensions.get('window');
 
@@ -131,10 +131,10 @@ export default function HomeScreen() {
         >
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
-              <View style={styles.nfcIconContainer}>
+              <View style={styles.cashIconContainer}>
                 <Text style={styles.nfcIcon}>📶</Text>
               </View>
-              <Text style={styles.nfcModalTitle}>Cihazınızı NFC oxuyucuya yaxınlaşdırın</Text>
+              <Text style={styles.modalTitle}>Cihazınızı NFC oxuyucuya yaxınlaşdırın</Text>
               <View style={styles.nfcAmountDisplay}>
                 <Text style={styles.nfcAmountText}>Amount: {selectedAmount}.00 ₼</Text>
               </View>
@@ -143,7 +143,7 @@ export default function HomeScreen() {
                 <Text style={styles.nfcReaderIcon}>📶</Text>
                 <Text style={styles.nfcReaderText}>NFC Reader</Text>
               </View>
-              <Text style={styles.nfcInstructions}>
+              <Text style={styles.instructions}>
                 Hold your device above the NFC reader below
               </Text>
               <View style={styles.cashButtonsContainer}>
@@ -808,4 +808,6 @@ const styles = StyleSheet.create({
     width: 100,
   },
   useAmountButton: {
-    backgroundColor: '#228
+    backgroundColor: '#228'
+  }
+})
